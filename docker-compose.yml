@@ -1,0 +1,26 @@
+version: '3.4'
+services:
+  server:
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+      args:
+        USER_UID: ${USERID}
+        MINECRAFT_JAVA_PACKAGE: ${MINECRAFT_JAVA_PACKAGE:-openjdk-17-jre-headless}
+        
+    container_name: ${GAME_NAME_PREFIX:-mc}-${SERVER_CONSTAINERS_NAME:-main}-server
+    restart: unless-stopped
+
+    environment:
+      GAMESERVER: ${LGSM_GAME_NAME:-mcserver}
+      LGSM_GITHUBUSER: GameServerManagers
+      LGSM_GITHUBREPO: LinuxGSM
+      LGSM_GITHUBBRANCH: master
+
+    volumes:
+      - ./server:/home/linuxgsm/serverfiles
+      - ./logs:/home/linuxgsm/log
+      - ./configs:/home/linuxgsm/lgsm/config-lgsm/mcserver
+    ports:
+      - "${SERVER_PORT:-25565}:25565/tcp"
+      - "${SERVER_PORT:-25565}:25565/udp"
