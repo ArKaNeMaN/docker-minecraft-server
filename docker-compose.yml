@@ -5,7 +5,7 @@ services:
       context: .
       dockerfile: ./Dockerfile
       args:
-        USER_UID: ${USERID}
+        USER_UID: ${USERID:-1000}
         MINECRAFT_JAVA_PACKAGE: ${MINECRAFT_JAVA_PACKAGE:-openjdk-17-jre-headless}
         
     container_name: ${GAME_NAME_PREFIX:-mc}-${SERVER_CONSTAINERS_NAME:-main}-server
