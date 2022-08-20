@@ -43,6 +43,8 @@ fi
 if [ -z "$(ls -A -- "serverfiles")" ]; then
     echo "installing ${GAMESERVER}"
     ./${GAMESERVER} auto-install
+
+    # TODO: Наверное удобнее будет, если после установки останавливать контейнер, на случай установки кастомного ядра и для предварительной настройки
 fi
 
 echo "starting cron"

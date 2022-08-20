@@ -12,6 +12,12 @@
 # Установка make для использования команд из Makefile
 sudo apt install make
 
+mkdir server
+cd server
+
+# Клонирование репозитория со всеми файлами для сборки
+git clone https://github.com/ArKaNeMaN/docker-minecraft-server .
+
 # Создание файла .env из шаблона
 cp .env.example .env
 nano .env
