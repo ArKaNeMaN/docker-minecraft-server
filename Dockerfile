@@ -6,7 +6,7 @@
 
 FROM ubuntu:20.04
 
-LABEL maintainer="LinuxGSM <me@danielgibbs.co.uk>"
+LABEL maintainer="ArKaNeMaN <arkaneman1@gmail.com>"
 
 ENV DEBIAN_FRONTEND noninteractive
 ENV TERM=xterm
@@ -23,8 +23,6 @@ RUN echo "**** apt upgrade ****" \
     && apt-get update; \
     apt-get upgrade -y
 
-ARG MINECRAFT_JAVA_PACKAGE=
-
 ## Install Base LinuxGSM Requirements
 RUN echo "**** Install Base LinuxGSM Requirements ****" \
     && apt-get update \
@@ -32,7 +30,6 @@ RUN echo "**** Install Base LinuxGSM Requirements ****" \
     && add-apt-repository multiverse \
     && apt-get update \
     && apt-get install -y \
-    $MINECRAFT_JAVA_PACKAGE \
     bc \
     binutils \
     bsdmainutils \
@@ -65,14 +62,6 @@ RUN echo "**** Install Base LinuxGSM Requirements ****" \
     sudo \
     tini
 
-# Install Cleanup
-RUN echo "**** Cleanup ****"  \
-    && apt-get -y autoremove \
-    && apt-get -y clean \
-    && rm -rf /var/lib/apt/lists/* \
-    && rm -rf /tmp/* \
-    && rm -rf /var/tmp/*
-
 ##Need use xterm for LinuxGSM##
 
 ENV DEBIAN_FRONTEND noninteractive
@@ -80,42 +69,41 @@ ENV DEBIAN_FRONTEND noninteractive
 ARG USERNAME=linuxgsm
 ARG USER_UID=1000
 ARG USER_GID=$USER_UID
+ENV HOMEPATH=/home/$USERNAME
 
-## Add linuxgsm user
-RUN echo "**** Add linuxgsm user ****" \
-# Create the user
-    && groupadd --gid $USER_GID $USERNAME \
+RUN groupadd --gid $USER_GID $USERNAME \
     && useradd --uid $USER_UID --gid $USER_GID -m $USERNAME \
-    #
-    # [Optional] Add sudo support. Omit if you don't need to install software after connecting.
     && echo $USERNAME ALL=\(root\) NOPASSWD:ALL > /etc/sudoers.d/$USERNAME \
-    && chmod 0440 /etc/sudoers.d/$USERNAME \
-    && chown $USERNAME:$USERNAME /home/$USERNAME
+    && chmod 0440 /etc/sudoers.d/$USERNAME
 
-# Create /opt/linuxgsm
-#RUN echo "**** Create /opt/linuxgsm ****" \
-#    && mkdir -p /opt/linuxgsm \
-#    && chown linuxgsm:linuxgsm /opt/linuxgsm
-
-## Download linuxgsm.sh
-RUN echo "**** Download linuxgsm.sh ****" \
-    && set -ex \
+RUN set -ex \
     && wget -O linuxgsm.sh https://linuxgsm.sh \
-    && chmod +x /linuxgsm.sh
-    
-ENV PATH=$PATH:/home/$USERNAME
-WORKDIR /home/$USERNAME
+    && chmod +x /linuxgsm.sh \
+    && cp /linuxgsm.sh $HOMEPATH/linuxgsm.sh
+
+ENV PATH=$PATH:$HOMEPATH
+WORKDIR $HOMEPATH
 
 COPY entrypoint.sh ./
 RUN chown $USERNAME:$USERNAME ./entrypoint.sh
-RUN chmod 777 ./entrypoint.sh
+RUN chmod -x ./entrypoint.sh
 
+ARG MINECRAFT_JAVA_PACKAGE=openjdk-17-jre-headless
+RUN apt-get install -y $MINECRAFT_JAVA_PACKAGE
+
+RUN apt-get -y autoremove \
+    && apt-get -y clean \
+    && rm -rf /var/lib/apt/lists/* \
+    && rm -rf /tmp/* \
+    && rm -rf /var/tmp/*
+
+RUN (crontab -l 2>/dev/null; echo "*/5 * * * * $HOMEPATH/*server monitor > /dev/null 2>&1") | crontab -
+RUN (crontab -l 2>/dev/null; echo "*/30 * * * * $HOMEPATH/*server update > /dev/null 2>&1") | crontab -
+RUN (crontab -l 2>/dev/null; echo "0 1 * * 0 $HOMEPATH/*server update-lgsm > /dev/null 2>&1") | crontab -
+
+RUN chown -R $USERNAME:$USERNAME $HOMEPATH
 USER $USERNAME
-
-# Add LinuxGSM cronjobs
-RUN (crontab -l 2>/dev/null; echo "*/5 * * * * /home/$USERNAME/*server monitor > /dev/null 2>&1") | crontab -
-RUN (crontab -l 2>/dev/null; echo "*/30 * * * * /home/$USERNAME/*server update > /dev/null 2>&1") | crontab -
-RUN (crontab -l 2>/dev/null; echo "0 1 * * 0 /home/$USERNAME/*server update-lgsm > /dev/null 2>&1") | crontab -
+EXPOSE 25565
 
 ENTRYPOINT [ "/usr/bin/tini", "--" ]
 CMD [ "bash", "./entrypoint.sh" ]

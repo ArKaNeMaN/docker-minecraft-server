@@ -23,15 +23,16 @@ echo -e "LGSM_GITHUBBRANCH: ${LGSM_GITHUBBRANCH}"
 echo -e ""
 echo -e "Initalising"
 echo -e "================================================================================"
+
 # Correct permissions in home dir
 echo "update permissions for linuxgsm"
 sudo chown -R linuxgsm:linuxgsm /home/linuxgsm
 
 # Copy linuxgsm.sh into homedir
-if [ ! -e ~/linuxgsm.sh ]; then
-    echo "copying linuxgsm.sh to /home/linuxgsm"
-    cp /linuxgsm.sh ~/linuxgsm.sh
-fi
+# if [ ! -e ~/linuxgsm.sh ]; then
+#     echo "copying linuxgsm.sh to /home/linuxgsm"
+#     cp /linuxgsm.sh ~/linuxgsm.sh
+# fi
 
 # Setup game server
 if [ ! -f "${GAMESERVER}" ]; then
@@ -51,9 +52,9 @@ echo "starting cron"
 sudo cron
 
 # Update game server
-echo ""
-echo "update ${GAMESERVER}"
-./${GAMESERVER} update
+# echo ""
+# echo "update ${GAMESERVER}"
+# ./${GAMESERVER} update
 
 echo ""
 echo "start ${GAMESERVER}"

@@ -13,6 +13,9 @@ build:
 start:
 	@docker-compose start
 
+restart:
+	@docker-compose restart
+
 stop:
 	@docker-compose stop
 
@@ -26,6 +29,9 @@ docker-logs:
 	@docker-compose logs server
 
 # Aliases
+r:
+	@make restart
+
 c:
 	@make console
 
