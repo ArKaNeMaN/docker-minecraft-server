@@ -5,7 +5,7 @@
 # endif
 
 up:
-	@bash -c 'USERID=$$(id -g) docker-compose up -d'
+	@bash -c 'USERID=$$(id -g) docker-compose up -d --build'
 # Что-то странное, но оно работает))
 build:
 	@bash -c 'USERID=$$(id -g) docker-compose build'
