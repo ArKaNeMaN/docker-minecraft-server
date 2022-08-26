@@ -16,6 +16,7 @@ services:
       LGSM_GITHUBUSER: GameServerManagers
       LGSM_GITHUBREPO: LinuxGSM
       LGSM_GITHUBBRANCH: master
+      LGSM_STOP_AFTER_INSTALL: ${LGSM_STOP_AFTER_INSTALL:-0}
 
     volumes:
       - ./server:/home/linuxgsm/serverfiles

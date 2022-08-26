@@ -8,7 +8,7 @@ exit_handler () {
 }
 
 # Exit trap
-echo "loading exit trap"
+echo "Loading exit trap."
 trap exit_handler SIGTERM
 
 echo -e "Welcome to the LinuxGSM Docker"
@@ -19,13 +19,14 @@ echo -e ""
 echo -e "LGSM_GITHUBUSER: ${LGSM_GITHUBUSER}"
 echo -e "LGSM_GITHUBREPO: ${LGSM_GITHUBREPO}"
 echo -e "LGSM_GITHUBBRANCH: ${LGSM_GITHUBBRANCH}"
+echo -e "LGSM_STOP_AFTER_INSTALL: ${LGSM_STOP_AFTER_INSTALL}"
 
 echo -e ""
 echo -e "Initalising"
 echo -e "================================================================================"
 
 # Correct permissions in home dir
-echo "update permissions for linuxgsm"
+echo "Update permissions for LinuxGSM."
 sudo chown -R linuxgsm:linuxgsm /home/linuxgsm
 
 # Copy linuxgsm.sh into homedir
@@ -36,19 +37,22 @@ sudo chown -R linuxgsm:linuxgsm /home/linuxgsm
 
 # Setup game server
 if [ ! -f "${GAMESERVER}" ]; then
-    echo "creating ./${GAMESERVER}"
+    echo "Creating ./${GAMESERVER}."
    ./linuxgsm.sh ${GAMESERVER}
 fi
 
 # Install game server
 if [ -z "$(ls -A -- "serverfiles")" ]; then
-    echo "installing ${GAMESERVER}"
+    echo "Installing ${GAMESERVER}."
     ./${GAMESERVER} auto-install
 
-    # TODO: Наверное удобнее будет, если после установки останавливать контейнер, на случай установки кастомного ядра и для предварительной настройки
+    if [ $LGSM_STOP_AFTER_INSTALL -ne "0" ]; then
+        echo "Server installed, container will be stopped."
+        exit 0
+    fi
 fi
 
-echo "starting cron"
+echo "Starting cron."
 sudo cron
 
 # Update game server
@@ -57,7 +61,7 @@ sudo cron
 # ./${GAMESERVER} update
 
 echo ""
-echo "start ${GAMESERVER}"
+echo "Start ${GAMESERVER}."
 ./${GAMESERVER} start
 sleep 5
 ./${GAMESERVER} details
