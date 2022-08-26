@@ -1,0 +1,6 @@
+server
+logs
+configs
+.env.example
+.gitignore
+Makefile
