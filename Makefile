@@ -6,6 +6,10 @@
 
 up:
 	@bash -c 'USERID=$$(id -g) docker-compose up -d --build'
+
+create:
+	@bash -c 'USERID=$$(id -g) docker-compose create --build'
+
 # Что-то странное, но оно работает))
 build:
 	@bash -c 'USERID=$$(id -g) docker-compose build'

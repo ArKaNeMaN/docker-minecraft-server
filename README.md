@@ -8,9 +8,11 @@
 
 [Установить Docker](https://docs.docker.com/engine/install/)
 
+[Добавить пользователя в группу `docker`](https://docs.docker.com/engine/install/linux-postinstall/#manage-docker-as-a-non-root-user) (_Опционально. Если пропустить этот шаг, все команды make надо будет вызывать через sudo_)
+
 ```shell
-# Установка make для использования команд из Makefile
-sudo apt install make
+# Установка make для использования команд из Makefile и git для клонирования репозитория
+sudo apt-get install -y make git
 
 mkdir server
 cd server
