@@ -14,6 +14,12 @@ create:
 build:
 	@bash -c 'USERID=$$(id -g) docker-compose build'
 
+build-no-cache:
+	@bash -c 'USERID=$$(id -g) docker-compose build --no-cache'
+
+bash:
+	@docker-compose exec server bash
+
 start:
 	@docker-compose start
 

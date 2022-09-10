@@ -52,8 +52,8 @@ if [ -z "$(ls -A -- "serverfiles")" ]; then
     fi
 fi
 
-echo "Starting cron."
-sudo cron
+# echo "Starting cron."
+# sudo cron
 
 # Update game server
 # echo ""

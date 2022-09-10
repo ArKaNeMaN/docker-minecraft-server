@@ -97,9 +97,9 @@ RUN apt-get -y autoremove \
     && rm -rf /tmp/* \
     && rm -rf /var/tmp/*
 
-RUN (crontab -l 2>/dev/null; echo "*/5 * * * * $HOMEPATH/*server monitor > /dev/null 2>&1") | crontab -
-RUN (crontab -l 2>/dev/null; echo "*/30 * * * * $HOMEPATH/*server update > /dev/null 2>&1") | crontab -
-RUN (crontab -l 2>/dev/null; echo "0 1 * * 0 $HOMEPATH/*server update-lgsm > /dev/null 2>&1") | crontab -
+# RUN (crontab -l 2>/dev/null; echo "*/5 * * * * $HOMEPATH/*server monitor > /dev/null 2>&1") | crontab -
+# RUN (crontab -l 2>/dev/null; echo "*/30 * * * * $HOMEPATH/*server update > /dev/null 2>&1") | crontab -
+# RUN (crontab -l 2>/dev/null; echo "0 1 * * 0 $HOMEPATH/*server update-lgsm > /dev/null 2>&1") | crontab -
 
 RUN chown -R $USERNAME:$USERNAME $HOMEPATH
 USER $USERNAME
